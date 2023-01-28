@@ -4,20 +4,17 @@
 
 #define TEMPERATURE_PRECISION 12
 
-#define One_Wire_Bus_Heater_Bak 4 /* термометры на нагревателях бака */
 #define One_Wire_Bus_Graduent_Bak 5 /* термометры градиента температуры бака */
-#define One_Wire_Bus_Kotel 6 /* термометры градиента температуры бака */
-#define One_Wire_Bus_Vodogrey 7 /* термометры градиента температуры бака */
+#define One_Wire_Bus_Kotel 6 /* термометры котла */
+#define One_Wire_Bus_Vodogrey 7 /* термометры водогрея */
 #define One_Wire_Bus_Room 8 /* термометры комнаты */
 #define RS485_Send 10
 
-OneWire oneWire_Heater_Bak(One_Wire_Bus_Heater_Bak);
 OneWire oneWire_Graduent_Bak(One_Wire_Bus_Graduent_Bak);
 OneWire oneWire_Kotel(One_Wire_Bus_Kotel);
 OneWire oneWire_Vodogrey(One_Wire_Bus_Vodogrey);
 OneWire oneWire_Room(One_Wire_Bus_Room);
 
-DallasTemperature tempSensor_Heater_Bak(&oneWire_Heater_Bak);
 DallasTemperature tempSensor_Graduent_Bak(&oneWire_Graduent_Bak);
 DallasTemperature tempSensor_Kotel(&oneWire_Kotel);
 DallasTemperature tempSensor_Vodogrey(&oneWire_Vodogrey);
@@ -41,12 +38,7 @@ DeviceAddress adrBakHigh = { 0x28, 0x5E, 0x15, 0x16, 0xA8, 0x01, 0x3C, 0xB6 };
 DeviceAddress adrBakMiddle = { 0x28, 0x9A, 0x76, 0x16, 0xA8, 0x01, 0x3C, 0xAA };
 DeviceAddress adrBakLow = { 0x28, 0xBA, 0xB0, 0x16, 0xA8, 0x01, 0x3C, 0xA2 };
 DeviceAddress adrBakDown = { 0x28, 0x25, 0x13, 0x16, 0xA8, 0x01, 0x3C, 0x4A };
-//DeviceAddress adrTen1 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
-//DeviceAddress adrTen2 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
-//DeviceAddress adrTen3 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
-//DeviceAddress adrTen4 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
-//DeviceAddress adrTen5 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
-//DeviceAddress adrTen6 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
+
 
 const char *termoNameArray[] = {"tSweatRoom", "tGydroRoom",
                           "tKotelIn1", "tKotelIn2",
@@ -54,8 +46,8 @@ const char *termoNameArray[] = {"tSweatRoom", "tGydroRoom",
                           "tPodacha", "tObratka",
                           "tVodaUp", "tVodaMidle", "tVodaLow",
                           "tBakUp", "tBakHigh", "tBakMiddle", "tBakLow", "tBakDown"
-//                          "tTen1", "tTen2", "tTen3", "tTen4", "tTen5", "tTen6"
                          };
+                         
 byte headers_am = sizeof(termoNameArray) / 2;
 
 float tSweatRoom, tGydroRoom;
@@ -64,7 +56,13 @@ float t3xCold, t3xHot, t3xMix;
 float tPodacha, tObratka;
 float tVodaUp, tVodaMidle, tVodaLow;
 float tBakUp, tBakHigh, tBakMiddle, tBakLow, tBakDown;
-//float tTen1, tTen2, tTen3, tTen4, tTen5, tTen6;
+
+float tPrevSweatRoom = 3, tPrevGydroRoom = 3;
+float tPrevKotelIn1 = 3, tPrevKotelIn2 = 3;
+float tPrev3xCold = 3, tPrev3xHot = 3, tPrev3xMix = 3;
+float tPrevPodacha = 3, tPrevObratka = 3;
+float tPrevVodaUp = 3, tPrevVodaMidle = 3, tPrevVodaLow = 3;
+float tPrevBakUp = 3, tPrevBakHigh = 3, tPrevBakMiddle = 3, tPrevBakLow = 3, tPrevBakDown = 3;
 
 float *termoValue[17] = {&tSweatRoom, &tGydroRoom,
                          &tKotelIn1, &tKotelIn2,
@@ -72,7 +70,14 @@ float *termoValue[17] = {&tSweatRoom, &tGydroRoom,
                          &tPodacha, &tObratka,
                          &tVodaUp, &tVodaMidle, &tVodaLow,
                          &tBakUp, &tBakHigh, &tBakMiddle, &tBakLow, &tBakDown
-//                         &tTen1, &tTen2, &tTen3, &tTen4, &tTen5, &tTen6
+                        };
+
+float *prevTermoValue[17] = {&tPrevSweatRoom, &tPrevGydroRoom,
+                         &tPrevKotelIn1, &tPrevKotelIn2,
+                         &tPrev3xCold, &tPrev3xHot, &tPrev3xMix,
+                         &tPrevPodacha, &tPrevObratka,
+                         &tPrevVodaUp, &tPrevVodaMidle, &tPrevVodaLow,
+                         &tPrevBakUp, &tPrevBakHigh, &tPrevBakMiddle, &tPrevBakLow, &tPrevBakDown
                         };
                         
 //unsigned long prevLoopMillis;
@@ -93,7 +98,6 @@ void setup() {
   delay(2000);                       // wait for a second
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
   
-  tempSensor_Heater_Bak.begin();
   tempSensor_Graduent_Bak.begin();
   tempSensor_Kotel.begin();
   tempSensor_Vodogrey.begin();
@@ -113,7 +117,6 @@ void setup() {
   tempSensor_Graduent_Bak.setResolution(adrBakLow, TEMPERATURE_PRECISION);
   tempSensor_Graduent_Bak.setResolution(adrBakDown, TEMPERATURE_PRECISION);
 
-  tempSensor_Heater_Bak.setWaitForConversion(false);  // makes it async
   tempSensor_Graduent_Bak.setWaitForConversion(false);  // makes it async
   tempSensor_Kotel.setWaitForConversion(false);  // makes it async
   tempSensor_Vodogrey.setWaitForConversion(false);  // makes it async
@@ -134,22 +137,22 @@ void loop() {
 /* ------------------------------------------------------ */
 /* Автоматически вызываетcя при поступлении новых данных. */
 void serialEvent() {
-  while (Serial.available()) {
-          /* надо парсить на лету, читать чужие ответы и игнорировать */
-          String postData = Serial.readStringUntil(';');
-      
-          if (postData.equals("IDgydro")) {
-            ReadTermoData();
-            SendTermoData();
-            requestTermo();
-          }
-  }
+    while (Serial.available()) {
+        /* надо парсить на лету, читать чужие ответы и игнорировать */
+        String postData = Serial.readStringUntil(';');
+    
+        if (postData.equals("IDgydro")) {
+          readTermoData();
+          if (checkValidTermoData()) { sendTermoData();    }
+          else                       { sendBadTermoData(); }
+          requestTermo();
+        }
+    }
 }
 
 /* ------------------------------------------------------ */
 void requestTermo() {
 
-  tempSensor_Heater_Bak.requestTemperatures();
   tempSensor_Graduent_Bak.requestTemperatures();
   tempSensor_Kotel.requestTemperatures();
   tempSensor_Vodogrey.requestTemperatures();
@@ -159,7 +162,7 @@ void requestTermo() {
 }
 
 /* ------------------------------------------------------ */
-void ReadTermoData() {
+void readTermoData() {
   
   tSweatRoom = tempSensor_Room.getTempC(adrSweatRoom);
   tGydroRoom = tempSensor_Room.getTempC(adrGydroRoom);
@@ -178,17 +181,37 @@ void ReadTermoData() {
   tBakMiddle = tempSensor_Graduent_Bak.getTempC(adrBakMiddle);
   tBakLow = tempSensor_Graduent_Bak.getTempC(adrBakLow);
   tBakDown = tempSensor_Graduent_Bak.getTempC(adrBakDown);
-//  tTen1 = tempSensor_Heater_Bak.getTempC(adrTen1);
-//  tTen2 = tempSensor_Heater_Bak.getTempC(adrTen2);
-//  tTen3 = tempSensor_Heater_Bak.getTempC(adrTen3);
-//  tTen4 = tempSensor_Heater_Bak.getTempC(adrTen4);
-//  tTen5 = tempSensor_Heater_Bak.getTempC(adrTen5);
-//  tTen6 = tempSensor_Heater_Bak.getTempC(adrTen6);
-
 }
 
 /* ------------------------------------------------------ */
-void SendTermoData() {
+bool checkValidTermoData() {
+
+  bool isValdData = false;
+  for (int i = 0; i < headers_am; i++) {
+    if (*termoValue[i] != *prevTermoValue[i]) { isValdData = true; }
+  }
+  return isValdData;
+}
+
+/* ------------------------------------------------------ */
+void sendBadTermoData() {
+
+  digitalWrite(RS485_Send, HIGH);
+  delay(1);
+  for (int i = 0; i < headers_am; i++) {
+    Serial.print(termoNameArray[i]);
+    Serial.print("=");
+    Serial.print(String(float(3)));
+    Serial.print(";");
+    *prevTermoValue[i] = *termoValue[i];
+    Serial.flush();
+  }
+  delay(1);
+  digitalWrite(RS485_Send, LOW);
+}
+
+/* ------------------------------------------------------ */
+void sendTermoData() {
 
   digitalWrite(RS485_Send, HIGH);
   delay(1);
@@ -197,6 +220,7 @@ void SendTermoData() {
     Serial.print("=");
     Serial.print(String(*termoValue[i]));
     Serial.print(";");
+    *prevTermoValue[i] = *termoValue[i];
     Serial.flush();
   }
   delay(1);
