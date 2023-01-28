@@ -1,4 +1,4 @@
-#include <avr/wdt.h>  /* Подключаем библиотеку для использования сторожевого таймера */
+//#include <avr/wdt.h>  /* Подключаем библиотеку для использования сторожевого таймера */
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
@@ -40,7 +40,7 @@ DeviceAddress adrBakUp = { 0x28, 0x40, 0xE9, 0x16, 0xA8, 0x01, 0x3C, 0x79 };
 DeviceAddress adrBakHigh = { 0x28, 0x5E, 0x15, 0x16, 0xA8, 0x01, 0x3C, 0xB6 };
 DeviceAddress adrBakMiddle = { 0x28, 0x9A, 0x76, 0x16, 0xA8, 0x01, 0x3C, 0xAA };
 DeviceAddress adrBakLow = { 0x28, 0xBA, 0xB0, 0x16, 0xA8, 0x01, 0x3C, 0xA2 };
-DeviceAddress adrBakDown = { 0x28, 0xA2, 0x4B, 0x16, 0xA8, 0x01, 0x3C, 0x8E };
+DeviceAddress adrBakDown = { 0x28, 0x25, 0x13, 0x16, 0xA8, 0x01, 0x3C, 0x4A };
 //DeviceAddress adrTen1 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
 //DeviceAddress adrTen2 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
 //DeviceAddress adrTen3 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
@@ -53,8 +53,8 @@ const char *termoNameArray[] = {"tSweatRoom", "tGydroRoom",
                           "t3xCold", "t3xHot", "t3xMix",
                           "tPodacha", "tObratka",
                           "tVodaUp", "tVodaMidle", "tVodaLow",
-                          "tBakUp", "tBakHigh", "tBakMiddle", "tBakLow", "tBakDown",
-                          "tTen1", "tTen2", "tTen3", "tTen4", "tTen5", "tTen6"
+                          "tBakUp", "tBakHigh", "tBakMiddle", "tBakLow", "tBakDown"
+//                          "tTen1", "tTen2", "tTen3", "tTen4", "tTen5", "tTen6"
                          };
 byte headers_am = sizeof(termoNameArray) / 2;
 
@@ -66,7 +66,7 @@ float tVodaUp, tVodaMidle, tVodaLow;
 float tBakUp, tBakHigh, tBakMiddle, tBakLow, tBakDown;
 //float tTen1, tTen2, tTen3, tTen4, tTen5, tTen6;
 
-float *termoValue[23] = {&tSweatRoom, &tGydroRoom,
+float *termoValue[17] = {&tSweatRoom, &tGydroRoom,
                          &tKotelIn1, &tKotelIn2,
                          &t3xCold, &t3xHot, &t3xMix,
                          &tPodacha, &tObratka,
@@ -83,7 +83,7 @@ float *termoValue[23] = {&tSweatRoom, &tGydroRoom,
 /*---------------------------------------------------------------------------------------------*/
 
 void setup() {
-  wdt_enable(WDTO_8S);
+ // wdt_enable(WDTO_8S);
   Serial.begin(19200);
 
   pinMode(RS485_Send, OUTPUT);
@@ -128,7 +128,7 @@ void setup() {
 
 void loop() {
 
-  wdt_reset();
+ // wdt_reset();
 }
 
 /* ------------------------------------------------------ */
