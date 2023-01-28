@@ -93,7 +93,7 @@ void setup() {
   tempSensor_Graduent_Bak.setWaitForConversion(false);  // makes it async
   tempSensor_Kotel.setWaitForConversion(false);  // makes it async
   tempSensor_Vodogrey.setWaitForConversion(false);  // makes it async
-  tempSensor_Room.setWaitForConversion(false);  // makes it async
+  tempSensor_Room.setWaitForConversion(true);  // makes it async
 
   requestTermo();
 }
@@ -133,6 +133,8 @@ void requestTermo() {
   tempSensor_Kotel.requestTemperatures();
   tempSensor_Vodogrey.requestTemperatures();
   tempSensor_Room.requestTemperatures();
+
+  delay(300);
 }
 
 /* ------------------------------------------------------ */
