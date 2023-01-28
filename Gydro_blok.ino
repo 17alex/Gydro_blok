@@ -9,6 +9,7 @@
 #define One_Wire_Bus_Kotel 6 /* термометры градиента температуры бака */
 #define One_Wire_Bus_Vodogrey 7 /* термометры градиента температуры бака */
 #define One_Wire_Bus_Room 8 /* термометры комнаты */
+#define RS485_Send 10
 
 OneWire oneWire_Heater_Bak(One_Wire_Bus_Heater_Bak);
 OneWire oneWire_Graduent_Bak(One_Wire_Bus_Graduent_Bak);
@@ -83,7 +84,9 @@ unsigned long loopTimeInterval = 5000;
 
 void setup() {
   wdt_enable(WDTO_8S);
-  Serial.begin(115200);
+  Serial.begin(9600);
+
+  pinMode(RS485_Send, OUTPUT);
   
   tempSensor_Heater_Bak.begin();
   tempSensor_Graduent_Bak.begin();
@@ -179,11 +182,20 @@ void ReadTermoData() {
 
 /* ------------------------------------------------------ */
 void SendTermoData() {
-  
+
+  digitalWrite(RS485_Send, HIGH);
+  delay(1);
   for (int i = 0; i < headers_am; i++) {
     Serial.print(termoNameArray[i]);
+ //   Serial.flush();
     Serial.print("=");
+ //   Serial.flush();
     Serial.print(String(*termoValue[i]));
+ //   Serial.flush();
     Serial.print(";");
+ //   Serial.flush();
   }
+ // Serial.flush();
+  delay(1);
+  digitalWrite(RS485_Send, LOW);
 }
