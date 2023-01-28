@@ -41,12 +41,12 @@ DeviceAddress adrBakHigh = { 0x28, 0x5E, 0x15, 0x16, 0xA8, 0x01, 0x3C, 0xB6 };
 DeviceAddress adrBakMiddle = { 0x28, 0x9A, 0x76, 0x16, 0xA8, 0x01, 0x3C, 0xAA };
 DeviceAddress adrBakLow = { 0x28, 0xBA, 0xB0, 0x16, 0xA8, 0x01, 0x3C, 0xA2 };
 DeviceAddress adrBakDown = { 0x28, 0xA2, 0x4B, 0x16, 0xA8, 0x01, 0x3C, 0x8E };
-DeviceAddress adrTen1 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
-DeviceAddress adrTen2 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
-DeviceAddress adrTen3 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
-DeviceAddress adrTen4 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
-DeviceAddress adrTen5 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
-DeviceAddress adrTen6 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
+//DeviceAddress adrTen1 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
+//DeviceAddress adrTen2 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
+//DeviceAddress adrTen3 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
+//DeviceAddress adrTen4 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
+//DeviceAddress adrTen5 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
+//DeviceAddress adrTen6 = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
 
 const char *termoNameArray[] = {"tSweatRoom", "tGydroRoom",
                           "tKotelIn1", "tKotelIn2",
@@ -64,19 +64,19 @@ float t3xCold, t3xHot, t3xMix;
 float tPodacha, tObratka;
 float tVodaUp, tVodaMidle, tVodaLow;
 float tBakUp, tBakHigh, tBakMiddle, tBakLow, tBakDown;
-float tTen1, tTen2, tTen3, tTen4, tTen5, tTen6;
+//float tTen1, tTen2, tTen3, tTen4, tTen5, tTen6;
 
 float *termoValue[23] = {&tSweatRoom, &tGydroRoom,
                          &tKotelIn1, &tKotelIn2,
                          &t3xCold, &t3xHot, &t3xMix,
                          &tPodacha, &tObratka,
                          &tVodaUp, &tVodaMidle, &tVodaLow,
-                         &tBakUp, &tBakHigh, &tBakMiddle, &tBakLow, &tBakDown,
-                         &tTen1, &tTen2, &tTen3, &tTen4, &tTen5, &tTen6
+                         &tBakUp, &tBakHigh, &tBakMiddle, &tBakLow, &tBakDown
+//                         &tTen1, &tTen2, &tTen3, &tTen4, &tTen5, &tTen6
                         };
                         
-unsigned long prevLoopMillis;
-unsigned long loopTimeInterval = 5000;
+//unsigned long prevLoopMillis;
+//unsigned long loopTimeInterval = 5000;
 
 /*---------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------*/
@@ -128,9 +128,7 @@ void setup() {
 
 void loop() {
 
-//  while (millis() - prevLoopMillis > loopTimeInterval) {
-//  prevLoopMillis = millis();
-//  }
+  wdt_reset();
 }
 
 /* ------------------------------------------------------ */
@@ -143,6 +141,7 @@ void serialEvent() {
           if (postData.equals("IDgydro")) {
             ReadTermoData();
             SendTermoData();
+            requestTermo();
           }
   }
 }
@@ -150,7 +149,6 @@ void serialEvent() {
 /* ------------------------------------------------------ */
 void requestTermo() {
 
-  wdt_reset();
   tempSensor_Heater_Bak.requestTemperatures();
   tempSensor_Graduent_Bak.requestTemperatures();
   tempSensor_Kotel.requestTemperatures();
@@ -162,8 +160,6 @@ void requestTermo() {
 
 /* ------------------------------------------------------ */
 void ReadTermoData() {
-  
-  requestTermo();
   
   tSweatRoom = tempSensor_Room.getTempC(adrSweatRoom);
   tGydroRoom = tempSensor_Room.getTempC(adrGydroRoom);
@@ -182,12 +178,13 @@ void ReadTermoData() {
   tBakMiddle = tempSensor_Graduent_Bak.getTempC(adrBakMiddle);
   tBakLow = tempSensor_Graduent_Bak.getTempC(adrBakLow);
   tBakDown = tempSensor_Graduent_Bak.getTempC(adrBakDown);
-  tTen1 = tempSensor_Heater_Bak.getTempC(adrTen1);
-  tTen2 = tempSensor_Heater_Bak.getTempC(adrTen2);
-  tTen3 = tempSensor_Heater_Bak.getTempC(adrTen3);
-  tTen4 = tempSensor_Heater_Bak.getTempC(adrTen4);
-  tTen5 = tempSensor_Heater_Bak.getTempC(adrTen5);
-  tTen6 = tempSensor_Heater_Bak.getTempC(adrTen6);
+//  tTen1 = tempSensor_Heater_Bak.getTempC(adrTen1);
+//  tTen2 = tempSensor_Heater_Bak.getTempC(adrTen2);
+//  tTen3 = tempSensor_Heater_Bak.getTempC(adrTen3);
+//  tTen4 = tempSensor_Heater_Bak.getTempC(adrTen4);
+//  tTen5 = tempSensor_Heater_Bak.getTempC(adrTen5);
+//  tTen6 = tempSensor_Heater_Bak.getTempC(adrTen6);
+
 }
 
 /* ------------------------------------------------------ */
