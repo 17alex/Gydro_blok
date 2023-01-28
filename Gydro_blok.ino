@@ -84,7 +84,7 @@ unsigned long loopTimeInterval = 5000;
 
 void setup() {
   wdt_enable(WDTO_8S);
-  Serial.begin(9600);
+  Serial.begin(19200);
 
   pinMode(RS485_Send, OUTPUT);
   
@@ -193,7 +193,7 @@ void SendTermoData() {
     Serial.print(String(*termoValue[i]));
  //   Serial.flush();
     Serial.print(";");
- //   Serial.flush();
+    Serial.flush();
   }
  // Serial.flush();
   delay(1);
