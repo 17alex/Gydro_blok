@@ -88,6 +88,11 @@ void setup() {
 
   pinMode(RS485_Send, OUTPUT);
   
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+  delay(2000);                       // wait for a second
+  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+  
   tempSensor_Heater_Bak.begin();
   tempSensor_Graduent_Bak.begin();
   tempSensor_Kotel.begin();
@@ -101,6 +106,12 @@ void setup() {
   tempSensor_Kotel.setResolution(adr3xMix, TEMPERATURE_PRECISION);
   tempSensor_Kotel.setResolution(adrPodacha, TEMPERATURE_PRECISION);
   tempSensor_Kotel.setResolution(adrObratka, TEMPERATURE_PRECISION);
+
+  tempSensor_Graduent_Bak.setResolution(adrBakUp, TEMPERATURE_PRECISION);
+  tempSensor_Graduent_Bak.setResolution(adrBakHigh, TEMPERATURE_PRECISION);
+  tempSensor_Graduent_Bak.setResolution(adrBakMiddle, TEMPERATURE_PRECISION);
+  tempSensor_Graduent_Bak.setResolution(adrBakLow, TEMPERATURE_PRECISION);
+  tempSensor_Graduent_Bak.setResolution(adrBakDown, TEMPERATURE_PRECISION);
 
   tempSensor_Heater_Bak.setWaitForConversion(false);  // makes it async
   tempSensor_Graduent_Bak.setWaitForConversion(false);  // makes it async
@@ -116,12 +127,10 @@ void setup() {
 /*---------------------------------------------------------------------------------------------*/
 
 void loop() {
-  wdt_reset();
-  
-  while (millis() - prevLoopMillis > loopTimeInterval) {
-  prevLoopMillis = millis();
 
-  }
+//  while (millis() - prevLoopMillis > loopTimeInterval) {
+//  prevLoopMillis = millis();
+//  }
 }
 
 /* ------------------------------------------------------ */
@@ -141,6 +150,7 @@ void serialEvent() {
 /* ------------------------------------------------------ */
 void requestTermo() {
 
+  wdt_reset();
   tempSensor_Heater_Bak.requestTemperatures();
   tempSensor_Graduent_Bak.requestTemperatures();
   tempSensor_Kotel.requestTemperatures();
@@ -187,15 +197,11 @@ void SendTermoData() {
   delay(1);
   for (int i = 0; i < headers_am; i++) {
     Serial.print(termoNameArray[i]);
- //   Serial.flush();
     Serial.print("=");
- //   Serial.flush();
     Serial.print(String(*termoValue[i]));
- //   Serial.flush();
     Serial.print(";");
     Serial.flush();
   }
- // Serial.flush();
   delay(1);
   digitalWrite(RS485_Send, LOW);
 }
