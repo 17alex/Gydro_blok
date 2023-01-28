@@ -70,7 +70,7 @@ float *termoValue[] = {
 /*---------------------------------------------------------------------------------------------*/
 void setup() {
 //  wdt_enable(WDTO_2S); //WDTO_15MS,WDTO_30MS,WDTO_60MS,WDTO_120MS,WDTO_250MS,WDTO_500MS,WDTO_1S,WDTO_2S,WDTO_4S,WDTO_8S
-  Serial.begin(19200);
+  Serial.begin(9600); //19200
 
   pinMode(RS485_SEND, OUTPUT);
   digitalWrite(RS485_SEND, LOW);
