@@ -167,14 +167,15 @@ void readTermoData() {
 void sendTermoData() {
 
   digitalWrite(RS485_SEND, HIGH);
-  delay(1);
+  delay(100);
   for (int i = 0; i < headers_am; i++) {
     Serial.print(termoNameArray[i]);
     Serial.print("=");
     Serial.print(String(*termoValue[i]));
     Serial.print(";");
     Serial.flush();
+    delay(5);
   }
-  delay(1);
+  delay(100);
   digitalWrite(RS485_SEND, LOW);
 }
