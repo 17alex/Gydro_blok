@@ -174,7 +174,7 @@ void sendTermoData() {
     Serial.print(String(*termoValue[i]));
     Serial.print(";");
     Serial.flush();
-    delay(5);
+    delay(5); // попробовать уменьшить, что бы поймать ошибку в котелке // может увеличить ???
   }
   delay(100);
   digitalWrite(RS485_SEND, LOW);
