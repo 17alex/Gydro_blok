@@ -144,8 +144,8 @@ void requestTermo() {
 /* ------------------------------------------------------ */
 void readTermoData() {
   
-  tSweatRoom = tempSensor_Room.getTempC(adrSweatRoom);
-  tGydroRoom = tempSensor_Room.getTempC(adrGydroRoom);
+  tSweatRoom = 5; //tempSensor_Room.getTempC(adrSweatRoom);
+  tGydroRoom = 5; //tempSensor_Room.getTempC(adrGydroRoom);
   tKotelIn1 = tempSensor_Kotel.getTempC(adrKotelIn1);
   tKotelIn2 = tempSensor_Kotel.getTempC(adrKotelIn2);
   t3xCold = tempSensor_Kotel.getTempC(adr3xCold);
@@ -153,9 +153,9 @@ void readTermoData() {
   t3xMix = tempSensor_Kotel.getTempC(adr3xMix);
   tPodacha = tempSensor_Kotel.getTempC(adrPodacha);
   tObratka = tempSensor_Kotel.getTempC(adrObratka);
-  tVodaUp = tempSensor_Vodogrey.getTempC(adrVodaUp);
-  tVodaMidle = tempSensor_Vodogrey.getTempC(adrVodaMidle);
-  tVodaLow = tempSensor_Vodogrey.getTempC(adrVodaLow);
+  tVodaUp = 5; //tempSensor_Vodogrey.getTempC(adrVodaUp);
+  tVodaMidle = 5; //tempSensor_Vodogrey.getTempC(adrVodaMidle);
+  tVodaLow = 5; //tempSensor_Vodogrey.getTempC(adrVodaLow);
   tBakUp = tempSensor_Graduent_Bak.getTempC(adrBakUp);
   tBakHigh = tempSensor_Graduent_Bak.getTempC(adrBakHigh);
   tBakMiddle = tempSensor_Graduent_Bak.getTempC(adrBakMiddle);
@@ -167,15 +167,14 @@ void readTermoData() {
 void sendTermoData() {
 
   digitalWrite(RS485_SEND, HIGH);
-  delay(100);
+  delay(1);
   for (int i = 0; i < headers_am; i++) {
     Serial.print(termoNameArray[i]);
     Serial.print("=");
     Serial.print(String(*termoValue[i]));
     Serial.print(";");
     Serial.flush();
-    delay(5); // попробовать уменьшить, что бы поймать ошибку в котелке // может увеличить ???
+    delay(1);
   }
-  delay(100);
   digitalWrite(RS485_SEND, LOW);
 }
